@@ -2,6 +2,7 @@ const gulp = require('gulp');
 const sass = require('gulp-sass')(require('sass'));
 const rename = require('gulp-rename');
 const autoprefixer = require('gulp-autoprefixer');
+const purgecss = require('gulp-purgecss');
 const browserSync = require('browser-sync').create();
 
 const styleSRC = './scss/**/*.scss';
@@ -27,12 +28,13 @@ function watch() {
   gulp.watch('./*.html').on('change', browserSync.reload);
 }
 
-//minify and autoprefixer
+//minify, autoprefixer and purge
 function minify() {
   return gulp
     .src(styleSRC)
-    .pipe(sass({ outputStyle: 'compressed' }))
+    .pipe(purgecss({ content: ['*.html'] }))
     .pipe(autoprefixer())
+    .pipe(sass({ outputStyle: 'compressed' }))
     .pipe(rename({ suffix: '.min' }))
     .pipe(gulp.dest(styleDEST));
 }
